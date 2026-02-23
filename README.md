@@ -76,10 +76,4 @@ Protected routes require header: `x-user-id: <userId>`. The frontend uses `GET /
 
 ## Deploy on Render
 
-1. Push this repo to GitHub and connect it to [Render](https://render.com).
-2. In the Render Dashboard: **New → Blueprint**. Connect the repo and use the `render.yaml` at the repo root. Deploy.
-3. After the first deploy:
-   - Open the **Static Site** service (e.g. `meeting-room-booking-web`).
-   - **Environment** → add or edit: `VITE_API_URL` = your Backend URL (e.g. `https://meeting-room-booking-api.onrender.com`). No trailing slash.
-   - Trigger a new deploy of the Static Site so the frontend is built with the correct API URL.
-4. Open the frontend URL and log in with the seed admin: **admin** / **admin123**.
+1. Will Push this repo to GitHub and connect it to [Render](https://render.com).
