@@ -16,6 +16,7 @@ build/
 npm-debug.log*
 
 # OS and IDE
+.DS_Store
 .idea/
 *.swp
 *.swo
