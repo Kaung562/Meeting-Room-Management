@@ -1,0 +1,10 @@
+{
+  "name": "meeting-room-booking",
+  "private": true,
+  "scripts": {
+    "backend": "cd backend && npm start",
+    "start:backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev"
+  }
+}
