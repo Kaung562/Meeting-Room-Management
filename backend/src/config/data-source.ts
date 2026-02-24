@@ -5,7 +5,6 @@ import { User } from '../entities/User';
 import { Booking } from '../entities/Booking';
 import dotenv from 'dotenv';
 
-// Load backend/.env (works from dist/config/ or src/config/)
 dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL;
