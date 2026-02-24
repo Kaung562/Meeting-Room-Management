@@ -113,52 +113,54 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
   return (
     <section>
       <h2>Bookings</h2>
-      <form onSubmit={handleCreate} style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
-          <label>
-            Meeting room
-            <ModernSelect
-              value={selectedRoomId}
-              onChange={setSelectedRoomId}
-              options={[
-                { value: '', label: 'Select room' },
-                ...rooms.map((room) => ({ value: String(room.id), label: room.name })),
-              ]}
-              placeholder="Select room"
-            />
-          </label>
-          <label>
-            Start
-            <DatePicker
-              selected={startTime}
-              onChange={(date) => setStartTime(date)}
-              showTimeSelect
-              dateFormat="dd/MM/yyyy, HH:mm"
-              minDate={new Date()}
-              placeholderText="00/00/0000, 00:00"
-              className="picker-input"
-            />
-          </label>
-          <label>
-            End
-            <DatePicker
-              selected={endTime}
-              onChange={(date) => setEndTime(date)}
-              showTimeSelect
-              dateFormat="dd/MM/yyyy, HH:mm"
-              minDate={startTime ?? new Date()}
-              placeholderText="00/00/0000, 00:00"
-              className="picker-input"
-            />
-          </label>
-          <button
-            type="submit"
-            className="primary-action-btn"
-          >
-            Create booking
-          </button>
-        </div>
-      </form>
+      {currentUser.role !== 'ADMIN' && (
+        <form onSubmit={handleCreate} style={{ marginBottom: 24 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
+            <label>
+              Meeting room
+              <ModernSelect
+                value={selectedRoomId}
+                onChange={setSelectedRoomId}
+                options={[
+                  { value: '', label: 'Select room' },
+                  ...rooms.map((room) => ({ value: String(room.id), label: room.name })),
+                ]}
+                placeholder="Select room"
+              />
+            </label>
+            <label>
+              Start
+              <DatePicker
+                selected={startTime}
+                onChange={(date) => setStartTime(date)}
+                showTimeSelect
+                dateFormat="dd/MM/yyyy, HH:mm"
+                minDate={new Date()}
+                placeholderText="00/00/0000, 00:00"
+                className="picker-input"
+              />
+            </label>
+            <label>
+              End
+              <DatePicker
+                selected={endTime}
+                onChange={(date) => setEndTime(date)}
+                showTimeSelect
+                dateFormat="dd/MM/yyyy, HH:mm"
+                minDate={startTime ?? new Date()}
+                placeholderText="00/00/0000, 00:00"
+                className="picker-input"
+              />
+            </label>
+            <button
+              type="submit"
+              className="primary-action-btn"
+            >
+              Create booking
+            </button>
+          </div>
+        </form>
+      )}
       <PopupModal
         open={modalOpen}
         title={modalTitle}
