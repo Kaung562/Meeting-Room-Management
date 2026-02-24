@@ -25,15 +25,16 @@ export async function findUserById(id: number): Promise<User | null> {
 
 export async function findUserByUsername(username: string, withPassword = false): Promise<User | null> {
   const repo = getUserRepo();
+  const normalizedUsername = username.trim();
   if (withPassword) {
     const row = await repo
       .createQueryBuilder('user')
-      .where('LOWER(user.username) = LOWER(:username)', { username: username.trim() })
+      .where('user.username = :username', { username: normalizedUsername })
       .addSelect('user.password')
       .getOne();
     return row;
   }
-  return repo.findOne({ where: { username: username.trim().toLowerCase() } });
+  return repo.findOne({ where: { username: normalizedUsername } });
 }
 
 export async function getUsers(): Promise<User[]> {
@@ -67,7 +68,7 @@ export async function createUser(data: {
 
   const hashed = await bcrypt.hash(password, SALT_ROUNDS);
   const user = getUserRepo().create({
-    username: username.toLowerCase(),
+    username,
     password: hashed,
     name,
     role: normalizedRole,
