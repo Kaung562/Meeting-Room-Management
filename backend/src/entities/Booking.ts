@@ -7,6 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from './User';
+import { Room } from './Room';
 
 @Entity('bookings')
 export class Booking {
@@ -15,6 +16,9 @@ export class Booking {
 
   @Column({ type: 'int' })
   userId!: number;
+
+  @Column({ type: 'int' })
+  roomId!: number;
 
   @Column({ type: 'timestamptz' })
   startTime!: Date;
@@ -28,4 +32,8 @@ export class Booking {
   @ManyToOne(() => User, (user) => user.bookings, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user?: User;
+
+  @ManyToOne(() => Room, (room) => room.bookings, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'roomId' })
+  room?: Room;
 }

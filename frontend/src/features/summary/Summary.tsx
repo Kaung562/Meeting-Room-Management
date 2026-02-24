@@ -24,7 +24,7 @@ export default function Summary({ currentUserId, onError }: SummaryProps) {
 
   return (
     <section>
-      <h2>Usage Summary (by user)</h2>
+      <h2>Usage Summary</h2>
       {summary.length === 0 ? (
         <p>No data.</p>
       ) : (
@@ -40,7 +40,8 @@ export default function Summary({ currentUserId, onError }: SummaryProps) {
             }}
           >
             <h3 style={{ margin: '0 0 8px 0' }}>
-              {user.name} <span className={`role-badge role-${user.role}`}>{user.role}</span>
+              {user.name}{' '}
+              <span className={`role-pill role-pill-${user.role.toLowerCase()}`}>{user.role}</span>
             </h3>
             <p style={{ margin: '0 0 12px 0', color: '#6b7280' }}>
               Total bookings: <strong>{totalBookings}</strong>
@@ -49,6 +50,7 @@ export default function Summary({ currentUserId, onError }: SummaryProps) {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #e5e7eb', textAlign: 'left' }}>
+                    <th style={{ padding: 6 }}>Room</th>
                     <th style={{ padding: 6 }}>Start</th>
                     <th style={{ padding: 6 }}>End</th>
                   </tr>
@@ -56,6 +58,7 @@ export default function Summary({ currentUserId, onError }: SummaryProps) {
                 <tbody>
                   {bookings.map((b) => (
                     <tr key={b.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                      <td style={{ padding: 6 }}>{b.roomName}</td>
                       <td style={{ padding: 6 }}>{formatDateTime(b.startTime)}</td>
                       <td style={{ padding: 6 }}>{formatDateTime(b.endTime)}</td>
                     </tr>

@@ -6,6 +6,14 @@ import { UserErrors, AuthErrors } from '../constants/errors';
 import type { UserRole } from '../entities/User';
 
 const SALT_ROUNDS = 10;
+const VALID_ROLES: UserRole[] = ['ADMIN', 'OWNER', 'USER'];
+
+function normalizeRole(role: unknown): UserRole | null {
+  if (typeof role !== 'string') return null;
+  const normalized = role.trim().toUpperCase();
+  if (!VALID_ROLES.includes(normalized as UserRole)) return null;
+  return normalized as UserRole;
+}
 
 export function getUserRepo() {
   return AppDataSource.getRepository(User);
@@ -50,7 +58,8 @@ export async function createUser(data: {
   if (!username) throw new ResponseError(400, UserErrors.USERNAME_REQUIRED);
   if (!password) throw new ResponseError(400, UserErrors.PASSWORD_REQUIRED);
   if (!name) throw new ResponseError(400, UserErrors.NAME_REQUIRED);
-  if (!data.role || !['admin', 'owner', 'user'].includes(data.role)) {
+  const normalizedRole = normalizeRole(data.role);
+  if (!normalizedRole) {
     throw new ResponseError(400, UserErrors.ROLE_INVALID);
   }
   const existing = await findUserByUsername(username);
@@ -61,17 +70,18 @@ export async function createUser(data: {
     username: username.toLowerCase(),
     password: hashed,
     name,
-    role: data.role,
+    role: normalizedRole,
   });
   return getUserRepo().save(user);
 }
 
 export async function updateUserRole(id: number, role: UserRole): Promise<User> {
-  if (!role || !['admin', 'owner', 'user'].includes(role)) {
+  const normalizedRole = normalizeRole(role);
+  if (!normalizedRole) {
     throw new ResponseError(400, UserErrors.ROLE_INVALID);
   }
   const user = await validateUserExists(id);
-  user.role = role;
+  user.role = normalizedRole;
   return getUserRepo().save(user);
 }
 

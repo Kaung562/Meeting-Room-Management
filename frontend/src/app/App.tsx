@@ -54,7 +54,7 @@ export default function App() {
   }, [currentUser?.id]);
 
   useEffect(() => {
-    if (!currentUser?.id || currentUser?.role !== 'admin') {
+    if (!currentUser?.id || currentUser?.role !== 'ADMIN') {
       setUsers([]);
       return;
     }
@@ -63,8 +63,8 @@ export default function App() {
       .catch(() => setUsers([]));
   }, [currentUser?.id, currentUser?.role]);
 
-  const isAdmin = currentUser?.role === 'admin';
-  const isOwnerOrAdmin = currentUser?.role === 'owner' || currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
+  const isOwnerOrAdmin = currentUser?.role === 'OWNER' || currentUser?.role === 'ADMIN';
 
   if (!currentUser) {
     return (
@@ -76,18 +76,11 @@ export default function App() {
     );
   }
 
-  const navBtn = (t: Tab, label: string, activeBg = '#e0e7ff') => (
+  const navBtn = (t: Tab, label: string) => (
     <button
       type="button"
       onClick={() => setTab(t)}
-      style={{
-        padding: '8px 16px',
-        fontWeight: tab === t ? 600 : 400,
-        background: tab === t ? activeBg : '#f3f4f6',
-        border: '1px solid #d1d5db',
-        borderRadius: 6,
-        cursor: 'pointer',
-      }}
+      className={`top-tab ${tab === t ? 'top-tab-active' : ''}`}
     >
       {label}
     </button>
@@ -95,21 +88,14 @@ export default function App() {
 
   return (
     <MainLayout>
-      <header style={{ marginBottom: 24, borderBottom: '1px solid #e5e7eb', paddingBottom: 16 }}>
-        <h1 style={{ margin: '0 0 16px 0' }}>Meeting Room Booking</h1>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
-          <span className={`role-badge role-${currentUser.role}`}>{currentUser.name}</span>
+      <header className="hero-card">
+        <h1 className="hero-title">Meeting Room Booking</h1>
+        <div className="hero-user-row">
+          <div className="hero-user-name">{currentUser.name}</div>
           <button
             type="button"
             onClick={handleLogout}
-            style={{
-              padding: '6px 12px',
-              background: '#f3f4f6',
-              border: '1px solid #d1d5db',
-              borderRadius: 6,
-              cursor: 'pointer',
-              fontSize: 14,
-            }}
+            className="hero-logout-btn"
           >
             Log out
           </button>
@@ -117,10 +103,10 @@ export default function App() {
         {error && <div className="error">{error}</div>}
       </header>
 
-      <nav style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
+      <nav className="top-tab-bar">
         {navBtn('bookings', 'Bookings')}
-        {isOwnerOrAdmin && navBtn('summary', 'Usage Summary', '#d1fae5')}
-        {isAdmin && navBtn('users', 'User Management', '#ede9fe')}
+        {isOwnerOrAdmin && navBtn('summary', 'Usage Summary')}
+        {isAdmin && navBtn('users', 'User Management')}
       </nav>
 
       {tab === 'bookings' && (

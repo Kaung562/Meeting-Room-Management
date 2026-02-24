@@ -2,9 +2,9 @@ import { getBookingRepo } from './bookingService';
 import { getUserRepo } from './userService';
 
 export interface UserSummaryItem {
-  user: { id: number; name: string; role: string };
+  user: { id: number; username: string; name: string; role: string };
   totalBookings: number;
-  bookings: { id: number; startTime: Date; endTime: Date }[];
+  bookings: { id: number; roomId: number; roomName: string; startTime: Date; endTime: Date }[];
 }
 
 export async function getUsageSummary(): Promise<UserSummaryItem[]> {
@@ -12,14 +12,14 @@ export async function getUsageSummary(): Promise<UserSummaryItem[]> {
   const bookingRepo = getBookingRepo();
   const users = await userRepo.find({ order: { name: 'ASC' } });
   const bookings = await bookingRepo.find({
-    relations: ['user'],
+    relations: ['user', 'room'],
     order: { startTime: 'ASC' },
   });
 
   const byUserId = new Map<number, UserSummaryItem>();
   for (const u of users) {
     byUserId.set(u.id, {
-      user: { id: u.id, name: u.name, role: u.role },
+      user: { id: u.id, username: u.username, name: u.name, role: (u.role ?? '').toUpperCase() },
       totalBookings: 0,
       bookings: [],
     });
@@ -31,8 +31,9 @@ export async function getUsageSummary(): Promise<UserSummaryItem[]> {
       item = {
         user: {
           id: b.userId,
+          username: b.user?.username ?? `user_${b.userId}`,
           name: b.user?.name ?? 'Unknown',
-          role: (b.user as { role?: string })?.role ?? 'user',
+          role: ((b.user as { role?: string })?.role ?? 'USER').toUpperCase(),
         },
         totalBookings: 0,
         bookings: [],
@@ -41,6 +42,8 @@ export async function getUsageSummary(): Promise<UserSummaryItem[]> {
     }
     item.bookings.push({
       id: b.id,
+      roomId: b.roomId,
+      roomName: b.room?.name ?? `Room #${b.roomId}`,
       startTime: b.startTime,
       endTime: b.endTime,
     });

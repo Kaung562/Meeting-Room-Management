@@ -42,7 +42,9 @@ export function requireRole(...allowedRoles: string[]) {
       next(new ResponseError(401, AuthErrors.NOT_AUTHENTICATED));
       return;
     }
-    if (!allowedRoles.includes(req.currentUser.role)) {
+    const allowed = allowedRoles.map((role) => role.toUpperCase());
+    const current = (req.currentUser.role ?? '').toUpperCase();
+    if (!allowed.includes(current)) {
       next(new ResponseError(403, AuthErrors.INSUFFICIENT_PERMISSIONS));
       return;
     }

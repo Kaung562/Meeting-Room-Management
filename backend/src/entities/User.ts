@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 import { Booking } from './Booking';
 
-export type UserRole = 'admin' | 'owner' | 'user';
+export type UserRole = 'ADMIN' | 'OWNER' | 'USER';
 
 @Entity('users')
 export class User {

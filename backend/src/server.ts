@@ -7,7 +7,7 @@ import { Client } from 'pg';
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 import { AppDataSource } from './config/data-source';
-import { seedAdmin } from './config/seed';
+import { seedAdmin, seedRooms } from './config/seed';
 import app from './app';
 
 const PORT = Number(process.env.PORT) || 3001;
@@ -26,8 +26,9 @@ async function dropAllTables(): Promise<void> {
   await client.connect();
   try {
     await client.query('DROP TABLE IF EXISTS "bookings" CASCADE');
+    await client.query('DROP TABLE IF EXISTS "rooms" CASCADE');
     await client.query('DROP TABLE IF EXISTS "users" CASCADE');
-    console.log('Dropped existing tables (bookings, users).');
+    console.log('Dropped existing tables (bookings, rooms, users).');
   } finally {
     await client.end();
   }
@@ -41,6 +42,7 @@ async function main() {
   }
   await AppDataSource.initialize();
   await seedAdmin();
+  await seedRooms();
 
   app.listen(PORT, () => {
     console.log(`Meeting Room Booking API listening on http://localhost:${PORT}`);

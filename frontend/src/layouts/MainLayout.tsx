@@ -5,5 +5,9 @@ interface MainLayoutProps {
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
-  return <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>{children}</div>;
+  return (
+    <div className="page-shell">
+      <div className="page-content">{children}</div>
+    </div>
+  );
 }

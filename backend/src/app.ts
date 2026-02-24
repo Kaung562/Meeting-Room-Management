@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import bookingRoutes from './routes/bookingRoutes';
 import summaryRoutes from './routes/summaryRoutes';
+import roomRoutes from './routes/roomRoutes';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/summary', summaryRoutes);
+app.use('/api/rooms', roomRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });

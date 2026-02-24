@@ -1,4 +1,4 @@
-import type { User, Booking, UserSummaryItem } from '../types';
+import type { User, Booking, UserSummaryItem, Room } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
@@ -78,7 +78,7 @@ export async function getBookings(userId: number): Promise<Booking[]> {
 
 export async function createBooking(
   userId: number,
-  payload: { startTime: string; endTime: string }
+  payload: { roomId: number; startTime: string; endTime: string }
 ): Promise<Booking> {
   const r = await fetch(`${API_BASE}/bookings`, {
     method: 'POST',
@@ -88,6 +88,13 @@ export async function createBooking(
   const data = (await r.json().catch(() => ({}))) as { error?: string; booking?: Booking };
   if (!r.ok) throw new Error(data.error ?? `HTTP ${r.status}`);
   return data.booking!;
+}
+
+export async function getRooms(userId: number): Promise<Room[]> {
+  const r = await fetch(`${API_BASE}/rooms`, { headers: headers(userId) });
+  const data = (await r.json().catch(() => ({}))) as { error?: string; rooms?: Room[] };
+  if (!r.ok) throw new Error(data.error ?? `HTTP ${r.status}`);
+  return data.rooms ?? [];
 }
 
 export async function deleteBooking(userId: number, id: number): Promise<void> {
