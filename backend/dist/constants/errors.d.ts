@@ -11,6 +11,7 @@ export declare const BookingErrors: {
     readonly NOT_FOUND: "Booking not found";
     readonly START_END_REQUIRED: "Start Time and End Time are required";
     readonly INVALID_DATE: "Invalid date format; use ISO 8601";
+    readonly START_NOT_IN_PAST: "Start Time must be now or later";
     readonly START_BEFORE_END: "Start Time must be before End Time";
     readonly OVERLAP: "Booking overlaps with an existing booking";
     readonly DELETE_OWN_ONLY: "You can only delete your own bookings";

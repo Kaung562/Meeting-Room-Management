@@ -17,7 +17,7 @@
    Or for development: `npm run dev`.
 
 On first run, the app creates tables and **seeds one admin user** if no admin exists:
-- **Username:** `admin`
+- **Username:** `admin123`
 - **Password:** `admin123`
 
 The admin creates all other users via the app (User Management).

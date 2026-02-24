@@ -37,6 +37,20 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
       setMessage('Please set both start and end time.');
       return;
     }
+    const startTs = new Date(startTime).getTime();
+    const endTs = new Date(endTime).getTime();
+    if (Number.isNaN(startTs) || Number.isNaN(endTs)) {
+      setMessage('Please choose valid start and end date/time.');
+      return;
+    }
+    if (startTs < Date.now()) {
+      setMessage('Start time must be now or later.');
+      return;
+    }
+    if (startTs >= endTs) {
+      setMessage('Start time must be before end time.');
+      return;
+    }
     createBooking(currentUser.id, { startTime, endTime })
       .then(() => {
         setStartTime('');
@@ -82,6 +96,8 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
             <input
               type="datetime-local"
               value={toLocalDatetime(startTime)}
+              min={toLocalDatetime(new Date().toISOString())}
+              step={60}
               onChange={(e) =>
                 setStartTime(e.target.value ? new Date(e.target.value).toISOString() : '')
               }
@@ -93,6 +109,7 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
             <input
               type="datetime-local"
               value={toLocalDatetime(endTime)}
+              step={60}
               onChange={(e) =>
                 setEndTime(e.target.value ? new Date(e.target.value).toISOString() : '')
               }

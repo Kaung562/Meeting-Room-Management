@@ -14,6 +14,7 @@ exports.BookingErrors = {
     NOT_FOUND: 'Booking not found',
     START_END_REQUIRED: 'Start Time and End Time are required',
     INVALID_DATE: 'Invalid date format; use ISO 8601',
+    START_NOT_IN_PAST: 'Start Time must be now or later',
     START_BEFORE_END: 'Start Time must be before End Time',
     OVERLAP: 'Booking overlaps with an existing booking',
     DELETE_OWN_ONLY: 'You can only delete your own bookings',
