@@ -10,7 +10,6 @@ const typeorm_1 = require("typeorm");
 const User_1 = require("../entities/User");
 const Booking_1 = require("../entities/Booking");
 const dotenv_1 = __importDefault(require("dotenv"));
-// Load backend/.env (works from dist/config/ or src/config/)
 dotenv_1.default.config({ path: path_1.default.join(__dirname, '..', '..', '.env') });
 const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL;
 exports.AppDataSource = new typeorm_1.DataSource(databaseUrl

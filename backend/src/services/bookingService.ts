@@ -48,6 +48,9 @@ function validateTimeOrder(startTime: string | undefined, endTime: string | unde
   if (Number.isNaN(s) || Number.isNaN(e)) {
     throw new ResponseError(400, BookingErrors.INVALID_DATE);
   }
+  if (s < Date.now()) {
+    throw new ResponseError(400, BookingErrors.START_NOT_IN_PAST);
+  }
   if (s >= e) {
     throw new ResponseError(400, BookingErrors.START_BEFORE_END);
   }

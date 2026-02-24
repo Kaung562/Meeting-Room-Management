@@ -15,7 +15,7 @@ A small web app for managing bookings for a single meeting room, with role-based
    npm run build
    npm start
    ```
-   API runs at http://localhost:3001. On first run, one **seed admin** user is created; the admin then creates other users via the app.
+  API runs at http://localhost:3001. On first run, one **seed admin** user is created; the admin then creates other users via the app.
 
 2. **Frontend** (Terminal 2)
 
@@ -28,7 +28,7 @@ A small web app for managing bookings for a single meeting room, with role-based
    App runs at http://localhost:5173.
    App runs at http://localhost:5173 and proxies `/api` to the backend.
 
-3. Open http://localhost:5173. **Log in** with username and password (default seed admin: **admin** / **admin123**). Then create other users in **User Management**, and create/view/delete bookings. Admins can open **User Management**; Owners and Admins can open **Usage Summary**.
+3. Open http://localhost:5173. **Log in** with username and password (default seed admin: **admin123** / **admin123**). Then create other users in **User Management**, and create/view/delete bookings. Admins can open **User Management**; Owners and Admins can open **Usage Summary**.
 
 ## Stack
 
@@ -71,9 +71,16 @@ Protected routes require header: `x-user-id: <userId>`. The frontend uses `GET /
 
 ## Seed and fresh DB
 
-- One **admin** user is created on first run: username **admin**, password **admin123**. The admin creates all other users via the app.
+- One **admin** user is created on first run: username **admin123**, password **admin123**. The admin creates all other users via the app.
 - To **clear all data and recreate tables**: set `DB_DROP_AND_CREATE=true` in `backend/.env`, start the backend once, then set it back to `false` (or leave `true` to always drop on every start).
 
-## Deploy on Render
+## Deployment
 
-1. Will Push this repo to GitHub and connect it to [Render](https://render.com).
+- Backend API is deployed on **Render**.
+- Frontend is deployed on **Render**.
+- PostgreSQL database is hosted on **Neon**.
+- Frontend URL: **https://fe-mt-room-booking.onrender.com**
+- Backend URL: **https://be-mt-room-booking.onrender.com**
+- Default seed admin credentials:
+      username - **admin123**
+      password - **admin123**

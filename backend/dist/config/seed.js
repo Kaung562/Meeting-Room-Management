@@ -10,11 +10,6 @@ const User_1 = require("../entities/User");
 const SALT_ROUNDS = 10;
 const SEED_ADMIN_USERNAME = 'admin123';
 const SEED_ADMIN_PASSWORD = 'admin123';
-/**
- * Ensures the seed admin user exists (username: admin, password: admin123).
- * - If no user with username "admin" exists, creates one with role admin.
- * - Run after DB init (and after drop+recreate when DB_DROP_AND_CREATE=true).
- */
 async function seedAdmin() {
     const repo = data_source_1.AppDataSource.getRepository(User_1.User);
     const existing = await repo.findOne({ where: { username: SEED_ADMIN_USERNAME } });
