@@ -176,6 +176,7 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
               <th style={{ padding: 8 }}>Room</th>
               <th style={{ padding: 8 }}>Start</th>
               <th style={{ padding: 8 }}>End</th>
+              <th style={{ padding: 8 }}>Created at</th>
               <th style={{ padding: 8 }}>Created by</th>
               <th style={{ padding: 8 }}>Actions</th>
             </tr>
@@ -183,7 +184,7 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
           <tbody>
             {bookings.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ padding: 16, color: '#6b7280' }}>
+                <td colSpan={6} style={{ padding: 16, color: '#6b7280' }}>
                   No bookings yet.
                 </td>
               </tr>
@@ -198,6 +199,7 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
                     <td style={{ padding: 8 }}>{b.room?.name ?? `Room #${b.roomId}`}</td>
                     <td style={{ padding: 8 }}>{formatDateTime(b.startTime)}</td>
                     <td style={{ padding: 8 }}>{formatDateTime(b.endTime)}</td>
+                    <td style={{ padding: 8 }}>{formatDateTime(b.createdAt)}</td>
                     <td style={{ padding: 8 }}>{b.userName ?? b.userId}</td>
                     <td style={{ padding: 8 }}>
                       {canDelete && (

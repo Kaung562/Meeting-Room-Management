@@ -48,7 +48,7 @@ export default function Login({ onLogin, error, clearError }: LoginProps) {
         </button>
       </form>
       <p style={{ marginTop: 24, fontSize: 12, color: '#9ca3af' }}>
-        Default admin: username <strong>admin</strong>, password <strong>admin123</strong>
+        Default admin: username <strong>admin123</strong>, password <strong>admin123</strong>
       </p>
     </div>
   );
