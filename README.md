@@ -25,7 +25,6 @@ A web app for managing bookings across multiple meeting rooms, with role-based a
    npm install
    npm run dev
    ```
-   App runs at http://localhost:5173.
    App runs at http://localhost:5173 and proxies `/api` to the backend.
 
 3. Open http://localhost:5173. **Log in** with username and password (default seed admin: **admin123** / **admin123**). Then create other users in **User Management**, and create/view/delete bookings.  
