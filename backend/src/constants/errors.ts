@@ -4,12 +4,14 @@ export const UserErrors = {
   USERNAME_REQUIRED: 'username is required',
   PASSWORD_REQUIRED: 'password is required',
   USERNAME_TAKEN: 'username already taken',
-  ROLE_INVALID: 'role must be admin, owner, or user',
+  ROLE_INVALID: 'role must be ADMIN, OWNER, or USER',
   CANNOT_DELETE_SELF: 'Cannot delete your own user',
 } as const;
 
 export const BookingErrors = {
   NOT_FOUND: 'Booking not found',
+  ROOM_ID_REQUIRED: 'roomId is required and must be an integer',
+  ROOM_NOT_FOUND: 'Room not found',
   START_END_REQUIRED: 'Start Time and End Time are required',
   INVALID_DATE: 'Invalid date format; use ISO 8601',
   START_NOT_IN_PAST: 'Start Time must be now or later',
@@ -26,5 +28,5 @@ export const AuthErrors = {
   INVALID_CREDENTIALS: 'Invalid username or password',
 } as const;
 
-export const ROLES = ['admin', 'owner', 'user'] as const;
+export const ROLES = ['ADMIN', 'OWNER', 'USER'] as const;
 export type Role = (typeof ROLES)[number];

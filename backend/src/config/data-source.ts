@@ -3,6 +3,7 @@ import path from 'path';
 import { DataSource } from 'typeorm';
 import { User } from '../entities/User';
 import { Booking } from '../entities/Booking';
+import { Room } from '../entities/Room';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
@@ -17,7 +18,7 @@ export const AppDataSource = new DataSource(
         synchronize: process.env.NODE_ENV !== 'production',
         dropSchema: false,
         logging: process.env.DB_LOGGING === 'true',
-        entities: [User, Booking],
+        entities: [User, Booking, Room],
         migrations: [],
         subscribers: [],
       }
@@ -31,7 +32,7 @@ export const AppDataSource = new DataSource(
         synchronize: process.env.NODE_ENV !== 'production',
         dropSchema: false,
         logging: process.env.DB_LOGGING === 'true',
-        entities: [User, Booking],
+        entities: [User, Booking, Room],
         migrations: [],
         subscribers: [],
       }

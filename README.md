@@ -1,6 +1,6 @@
 # Meeting Room Booking System
 
-A small web app for managing bookings for a single meeting room, with role-based access (Admin, Owner, User).
+A web app for managing bookings across multiple meeting rooms, with role-based access (`ADMIN`, `OWNER`, `USER`).
 
 ## Quick start
 
@@ -28,7 +28,10 @@ A small web app for managing bookings for a single meeting room, with role-based
    App runs at http://localhost:5173.
    App runs at http://localhost:5173 and proxies `/api` to the backend.
 
-3. Open http://localhost:5173. **Log in** with username and password (default seed admin: **admin123** / **admin123**). Then create other users in **User Management**, and create/view/delete bookings. Admins can open **User Management**; Owners and Admins can open **Usage Summary**.
+3. Open http://localhost:5173. **Log in** with username and password (default seed admin: **admin123** / **admin123**). Then create other users in **User Management**, and create/view/delete bookings.  
+   - Booking creation requires selecting a meeting room.
+   - Admins can open **User Management**.
+   - Owners and Admins can open **Usage Summary**.
 
 ## Stack
 
@@ -38,7 +41,7 @@ A small web app for managing bookings for a single meeting room, with role-based
 
 ## Roles and permissions
 
-| Action | User | Owner | Admin |
+| Action | USER | OWNER | ADMIN |
 |--------|------|-------|-------|
 | Create booking | ✓ | ✓ | ✓ |
 | View all bookings | ✓ | ✓ | ✓ |
@@ -48,7 +51,7 @@ A small web app for managing bookings for a single meeting room, with role-based
 | List / create / delete users | ✗ | ✗ | ✓ |
 | Change user roles | ✗ | ✗ | ✓ |
 
-**User deletion:** When an admin deletes a user, all bookings created by that user are removed.
+**User deletion flow:** If an admin deletes a user who has bookings, UI shows a warning/confirmation first. If confirmed, current behavior applies: user is deleted and their bookings are removed.
 
 ## Time and overlap rules
 
@@ -59,20 +62,21 @@ A small web app for managing bookings for a single meeting room, with role-based
 ## API (summary)
 
 - `GET /api/users/me` — Current user (any role)
-- `GET/POST /api/users` — List / create users (admin)
-- `PATCH /api/users/:id/role` — Change role (admin)
-- `DELETE /api/users/:id` — Delete user (admin)
+- `GET/POST /api/users` — List / create users (`ADMIN`)
+- `PATCH /api/users/:id/role` — Change role (`ADMIN`)
+- `DELETE /api/users/:id` — Delete user (`ADMIN`)
 - `GET /api/bookings` — List bookings
-- `POST /api/bookings` — Create booking (body: `startTime`, `endTime`)
-- `DELETE /api/bookings/:id` — Delete booking (permission enforced)
-- `GET /api/summary` — Usage summary by user (owner, admin)
+- `GET /api/rooms` — List available meeting rooms
+- `POST /api/bookings` — Create booking (body: `roomId`, `startTime`, `endTime`)
+- `DELETE /api/bookings/:id` — Delete booking (permission enforced: USER own-only, OWNER/ADMIN any)
+- `GET /api/summary` — Usage summary by user (OWNER, ADMIN). Includes room name per booking.
 
-Protected routes require header: `x-user-id: <userId>`. The frontend uses `GET /api/users/demo` (no auth) to populate the login dropdown.
+Protected routes require header: `x-user-id: <userId>`.
 
 ## Seed and fresh DB
 
 - One **admin** user is created on first run: username **admin123**, password **admin123**. The admin creates all other users via the app.
-- To **clear all data and recreate tables**: set `DB_DROP_AND_CREATE=true` in `backend/.env`, start the backend once, then set it back to `false` (or leave `true` to always drop on every start).
+- Seed meeting rooms are created on startup.
 
 ## Deployment
 

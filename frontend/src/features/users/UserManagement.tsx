@@ -1,7 +1,9 @@
 import { useState, useEffect, FormEvent } from 'react';
-import { getUsers, createUser, updateUserRole, deleteUser } from '../../lib/api';
+import { getUsers, createUser, updateUserRole, deleteUser, getSummary } from '../../lib/api';
 import { ROLES } from '../../constants';
 import type { User } from '../../types';
+import ModernSelect from '../../components/ModernSelect';
+import ConfirmModal from '../../components/ConfirmModal';
 
 interface UserManagementProps {
   currentUserId: number;
@@ -19,8 +21,13 @@ export default function UserManagement({
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState<string>('user');
+  const [role, setRole] = useState<string>('USER');
   const [message, setMessage] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: number;
+    label: string;
+    bookingCount: number;
+  } | null>(null);
 
   useEffect(() => {
     getUsers(currentUserId)
@@ -54,7 +61,7 @@ export default function UserManagement({
         setUsername('');
         setPassword('');
         setName('');
-        setRole('user');
+        setRole('USER');
         setMessage('User created.');
       })
       .catch((e) => {
@@ -78,7 +85,7 @@ export default function UserManagement({
       });
   };
 
-  const handleDelete = (id: number) => {
+  const performDelete = (id: number) => {
     if (id === currentUserId) {
       setMessage('Cannot delete your own user.');
       return;
@@ -96,9 +103,38 @@ export default function UserManagement({
       });
   };
 
+  const handleDelete = async (id: number, username: string, name: string) => {
+    if (id === currentUserId) {
+      setMessage('Cannot delete your own user.');
+      return;
+    }
+
+    try {
+      const summary = await getSummary(currentUserId);
+      const target = summary.find((item) => item.user.id === id);
+      const bookingCount = target?.totalBookings ?? 0;
+
+      if (bookingCount > 0) {
+        setDeleteTarget({
+          id,
+          label: `${name} (${username})`,
+          bookingCount,
+        });
+        return;
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setMessage(msg);
+      onError(msg);
+      return;
+    }
+
+    performDelete(id);
+  };
+
   return (
     <section>
-      <h2>User Management (Admin)</h2>
+      <h2>User Management</h2>
       <form onSubmit={handleCreate} style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
           <label>
@@ -108,7 +144,7 @@ export default function UserManagement({
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
-              style={{ display: 'block', marginTop: 4, padding: 6 }}
+              className="form-control"
             />
           </label>
           <label>
@@ -118,7 +154,7 @@ export default function UserManagement({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              style={{ display: 'block', marginTop: 4, padding: 6 }}
+              className="form-control"
             />
           </label>
           <label>
@@ -128,29 +164,21 @@ export default function UserManagement({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Display name"
-              style={{ display: 'block', marginTop: 4, padding: 6 }}
+              className="form-control"
             />
           </label>
           <label>
             Role
-            <select value={role} onChange={(e) => setRole(e.target.value)} style={{ padding: 6 }}>
-              {ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
+            <ModernSelect
+              value={role}
+              onChange={setRole}
+              options={ROLES.map((r) => ({ value: r, label: r }))}
+              placeholder="Select role"
+            />
           </label>
           <button
             type="submit"
-            style={{
-              padding: '8px 16px',
-              background: '#7c3aed',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 6,
-              cursor: 'pointer',
-            }}
+            className="primary-action-btn"
           >
             Create user
           </button>
@@ -184,31 +212,18 @@ export default function UserManagement({
               <td style={{ padding: 8 }}>{u.name}</td>
               <td style={{ padding: 8, fontSize: 12, color: '#6b7280' }}>{u.id}</td>
               <td style={{ padding: 8 }}>
-                <select
+                <ModernSelect
                   value={u.role}
-                  onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                  style={{ padding: 4 }}
-                >
-                  {ROLES.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(newRole) => handleRoleChange(u.id, newRole)}
+                  options={ROLES.map((r) => ({ value: r, label: r }))}
+                />
               </td>
               <td style={{ padding: 8 }}>
                 {u.id !== currentUserId && (
                   <button
                     type="button"
-                    onClick={() => handleDelete(u.id)}
-                    style={{
-                      padding: '4px 10px',
-                      background: '#fef2f2',
-                      color: '#b91c1c',
-                      border: '1px solid #fecaca',
-                      borderRadius: 4,
-                      cursor: 'pointer',
-                    }}
+                    onClick={() => handleDelete(u.id, u.username, u.name)}
+                    className="danger-action-btn"
                   >
                     Delete
                   </button>
@@ -218,6 +233,24 @@ export default function UserManagement({
           ))}
         </tbody>
       </table>
+      <ConfirmModal
+        open={Boolean(deleteTarget)}
+        title="Delete user warning"
+        message={
+          deleteTarget
+            ? `This user has ${deleteTarget.bookingCount} booking(s). If you continue, this user and their bookings will be deleted.`
+            : ''
+        }
+        confirmText="Delete anyway"
+        cancelText="Cancel"
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => {
+          if (!deleteTarget) return;
+          const id = deleteTarget.id;
+          setDeleteTarget(null);
+          performDelete(id);
+        }}
+      />
     </section>
   );
 }

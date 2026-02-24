@@ -8,9 +8,9 @@ const router = Router();
 router.use(authMiddleware);
 
 router.get('/me', asyncHandler(userController.getMe));
-router.get('/', requireRole('admin'), asyncHandler(userController.getUsers));
-router.post('/', requireRole('admin'), asyncHandler(userController.createUser));
-router.patch('/:id/role', requireRole('admin'), asyncHandler(userController.updateUserRole));
-router.delete('/:id', requireRole('admin'), asyncHandler(userController.deleteUser));
+router.get('/', requireRole('ADMIN'), asyncHandler(userController.getUsers));
+router.post('/', requireRole('ADMIN'), asyncHandler(userController.createUser));
+router.patch('/:id/role', requireRole('ADMIN'), asyncHandler(userController.updateUserRole));
+router.delete('/:id', requireRole('ADMIN'), asyncHandler(userController.deleteUser));
 
 export default router;

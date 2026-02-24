@@ -5,6 +5,6 @@ import { asyncHandler } from '../middlewares/asyncHandler';
 
 const router = Router();
 
-router.get('/', authMiddleware, requireRole('owner', 'admin'), asyncHandler(summaryController.getSummary));
+router.get('/', authMiddleware, requireRole('OWNER', 'ADMIN'), asyncHandler(summaryController.getSummary));
 
 export default router;

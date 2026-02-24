@@ -7,9 +7,10 @@ export async function getBookings(req: Request, res: Response): Promise<void> {
 }
 
 export async function createBooking(req: Request, res: Response): Promise<void> {
-  const { startTime, endTime } = req.body;
+  const { roomId, startTime, endTime } = req.body;
   const booking = await bookingService.createBooking(
     req.currentUser!.id,
+    Number(roomId),
     startTime,
     endTime
   );
