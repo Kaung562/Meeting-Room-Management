@@ -12,9 +12,9 @@ exports.UserErrors = {
 };
 exports.BookingErrors = {
     NOT_FOUND: 'Booking not found',
-    START_END_REQUIRED: 'startTime and endTime are required',
+    START_END_REQUIRED: 'Start Time and End Time are required',
     INVALID_DATE: 'Invalid date format; use ISO 8601',
-    START_BEFORE_END: 'startTime must be before endTime',
+    START_BEFORE_END: 'Start Time must be before End Time',
     OVERLAP: 'Booking overlaps with an existing booking',
     DELETE_OWN_ONLY: 'You can only delete your own bookings',
 };

@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 // Load backend/.env (works from dist/config/ or src/config/)
 dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
 
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL;
 
 export const AppDataSource = new DataSource(
   databaseUrl
