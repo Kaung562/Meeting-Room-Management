@@ -142,7 +142,7 @@ export default function UserManagement({
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.replace(/\s/g, ''))}
               placeholder="Username"
               className="form-control"
             />

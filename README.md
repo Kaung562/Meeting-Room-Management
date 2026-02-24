@@ -36,7 +36,7 @@ A web app for managing bookings across multiple meeting rooms, with role-based a
 
 - **Backend:** Node.js, TypeScript, Express, TypeORM, PostgreSQL
 - **Frontend:** Pure React (TypeScript), no Redux/Router/state libs — React + React DOM only; built with Vite
-- **Auth:** Header `x-user-id` (demo only; not production-grade)
+- **Auth:** Header `x-user-id` 
 
 ## Roles and permissions
 
