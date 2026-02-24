@@ -63,10 +63,14 @@ function validateTimeOrder(startTime: string | undefined, endTime: string | unde
 
 export async function createBooking(
   userId: number,
+  currentUserRole: string,
   roomId: number,
   startTime: string,
   endTime: string
 ): Promise<Booking> {
+  if ((currentUserRole ?? '').toUpperCase() === 'ADMIN') {
+    throw new ResponseError(403, BookingErrors.ADMIN_CREATE_FORBIDDEN);
+  }
   validateTimeOrder(startTime, endTime);
   if (!Number.isInteger(roomId)) {
     throw new ResponseError(400, BookingErrors.ROOM_ID_REQUIRED);

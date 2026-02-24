@@ -10,6 +10,7 @@ export const UserErrors = {
 
 export const BookingErrors = {
   NOT_FOUND: 'Booking not found',
+  ADMIN_CREATE_FORBIDDEN: 'Admin cannot create bookings',
   ROOM_ID_REQUIRED: 'roomId is required and must be an integer',
   ROOM_NOT_FOUND: 'Room not found',
   START_END_REQUIRED: 'Start Time and End Time are required',
