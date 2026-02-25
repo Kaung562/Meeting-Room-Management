@@ -18,6 +18,7 @@ export default function UserManagement({
   setUsers,
   onError,
 }: UserManagementProps) {
+  const manageableRoles = ROLES.filter((r) => r !== 'ADMIN');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -172,7 +173,7 @@ export default function UserManagement({
             <ModernSelect
               value={role}
               onChange={setRole}
-              options={ROLES.map((r) => ({ value: r, label: r }))}
+              options={manageableRoles.map((r) => ({ value: r, label: r }))}
               placeholder="Select role"
             />
           </label>
@@ -212,11 +213,19 @@ export default function UserManagement({
               <td style={{ padding: 8 }}>{u.name}</td>
               <td style={{ padding: 8, fontSize: 12, color: '#6b7280' }}>{u.id}</td>
               <td style={{ padding: 8 }}>
-                <ModernSelect
-                  value={u.role}
-                  onChange={(newRole) => handleRoleChange(u.id, newRole)}
-                  options={ROLES.map((r) => ({ value: r, label: r }))}
-                />
+                {u.role === 'ADMIN' ? (
+                  <div className="modern-select-root role-select-readonly">
+                    <div className="modern-select-trigger modern-select-trigger-readonly">
+                      <span className="modern-select-value">ADMIN</span>
+                    </div>
+                  </div>
+                ) : (
+                  <ModernSelect
+                    value={u.role}
+                    onChange={(newRole) => handleRoleChange(u.id, newRole)}
+                    options={manageableRoles.map((r) => ({ value: r, label: r }))}
+                  />
+                )}
               </td>
               <td style={{ padding: 8 }}>
                 {u.id !== currentUserId && (
