@@ -4,6 +4,7 @@ import { ROLES } from '../../constants';
 import type { User } from '../../types';
 import ModernSelect from '../../components/ModernSelect';
 import ConfirmModal from '../../components/ConfirmModal';
+import PopupModal from '../../components/PopupModal';
 
 interface UserManagementProps {
   currentUserId: number;
@@ -16,7 +17,6 @@ export default function UserManagement({
   currentUserId,
   users,
   setUsers,
-  onError,
 }: UserManagementProps) {
   const manageableRoles = ROLES.filter((r) => r !== 'ADMIN');
   const [username, setUsername] = useState('');
@@ -29,6 +29,16 @@ export default function UserManagement({
     label: string;
     bookingCount: number;
   } | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalVariant, setModalVariant] = useState<'success' | 'error' | 'info'>('info');
+  const [modalTitle, setModalTitle] = useState('Info');
+
+  const showModal = (title: string, text: string, variant: 'success' | 'error' | 'info') => {
+    setModalTitle(title);
+    setMessage(text);
+    setModalVariant(variant);
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     getUsers(currentUserId)
@@ -40,15 +50,15 @@ export default function UserManagement({
     e.preventDefault();
     setMessage('');
     if (!username.trim()) {
-      setMessage('Username is required.');
+      showModal('Validation error', 'Username is required.', 'error');
       return;
     }
     if (!password) {
-      setMessage('Password is required.');
+      showModal('Validation error', 'Password is required.', 'error');
       return;
     }
     if (!name.trim()) {
-      setMessage('Name is required.');
+      showModal('Validation error', 'Name is required.', 'error');
       return;
     }
     createUser(currentUserId, {
@@ -63,12 +73,11 @@ export default function UserManagement({
         setPassword('');
         setName('');
         setRole('USER');
-        setMessage('User created.');
+        showModal('Success', 'User created.', 'success');
       })
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
-        setMessage(msg);
-        onError(msg);
+        showModal('User creation failed', msg, 'error');
       });
   };
 
@@ -77,36 +86,34 @@ export default function UserManagement({
     updateUserRole(currentUserId, id, newRole)
       .then((updated) => {
         setUsers((prev) => prev.map((u) => (u.id === id ? updated : u)));
-        setMessage('Role updated.');
+        showModal('Success', 'Role updated.', 'success');
       })
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
-        setMessage(msg);
-        onError(msg);
+        showModal('Role update failed', msg, 'error');
       });
   };
 
   const performDelete = (id: number) => {
     if (id === currentUserId) {
-      setMessage('Cannot delete your own user.');
+      showModal('Not allowed', 'Cannot delete your own user.', 'error');
       return;
     }
     setMessage('');
     deleteUser(currentUserId, id)
       .then(() => {
         setUsers((prev) => prev.filter((u) => u.id !== id));
-        setMessage('User deleted. Their bookings were also removed.');
+        showModal('Success', 'User deleted. Their bookings were also removed.', 'success');
       })
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
-        setMessage(msg);
-        onError(msg);
+        showModal('Delete failed', msg, 'error');
       });
   };
 
   const handleDelete = async (id: number, username: string, name: string) => {
     if (id === currentUserId) {
-      setMessage('Cannot delete your own user.');
+      showModal('Not allowed', 'Cannot delete your own user.', 'error');
       return;
     }
 
@@ -125,8 +132,7 @@ export default function UserManagement({
       }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      setMessage(msg);
-      onError(msg);
+      showModal('Failed to check bookings', msg, 'error');
       return;
     }
 
@@ -185,17 +191,14 @@ export default function UserManagement({
           </button>
         </div>
       </form>
-      {message && (
-        <div
-          className={
-            message.includes('created') || message.includes('updated') || message.includes('deleted')
-              ? 'success'
-              : 'error'
-          }
-        >
-          {message}
-        </div>
-      )}
+      <PopupModal
+        open={modalOpen}
+        title={modalTitle}
+        variant={modalVariant}
+        onClose={() => setModalOpen(false)}
+      >
+        {message}
+      </PopupModal>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '2px solid #e5e7eb', textAlign: 'left' }}>

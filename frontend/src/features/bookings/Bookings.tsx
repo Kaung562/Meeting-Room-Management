@@ -86,7 +86,6 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
         showModal('Booking failed', msg, 'error');
-        onError(msg);
       });
   };
 
@@ -106,7 +105,6 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
         showModal('Delete failed', msg, 'error');
-        onError(msg);
       });
   };
 
