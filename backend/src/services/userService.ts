@@ -63,6 +63,9 @@ export async function createUser(data: {
   if (!normalizedRole) {
     throw new ResponseError(400, UserErrors.ROLE_INVALID);
   }
+  if (normalizedRole === 'ADMIN') {
+    throw new ResponseError(400, UserErrors.ROLE_INVALID);
+  }
   const existing = await findUserByUsername(username);
   if (existing) throw new ResponseError(400, UserErrors.USERNAME_TAKEN);
 
@@ -82,6 +85,9 @@ export async function updateUserRole(id: number, role: UserRole): Promise<User> 
     throw new ResponseError(400, UserErrors.ROLE_INVALID);
   }
   const user = await validateUserExists(id);
+  if (user.role === 'ADMIN' || normalizedRole === 'ADMIN') {
+    throw new ResponseError(400, UserErrors.ROLE_INVALID);
+  }
   user.role = normalizedRole;
   return getUserRepo().save(user);
 }
