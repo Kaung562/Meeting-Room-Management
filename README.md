@@ -74,7 +74,7 @@ Protected routes require header: `x-user-id: <userId>`.
 
 ## Seed and fresh DB
 
-- One **admin** user is created on first run: username **admin123**, password **admin123**. The admin creates all other users via the app.
+- One **admin** user is created on first run. The admin creates all other users via the app.
 - Seed meeting rooms are created on startup.
 
 ## Deployment
@@ -84,6 +84,3 @@ Protected routes require header: `x-user-id: <userId>`.
 - PostgreSQL database is hosted on **Neon**.
 - Frontend URL: **https://fe-mt-room-booking.onrender.com**
 - Backend URL: **https://be-mt-room-booking.onrender.com**
-- Default seed admin credentials:
-      username - **admin123**
-      password - **admin123**
