@@ -10,7 +10,8 @@ import { seedAdmin, seedRooms } from './config/seed';
 import app from './app';
 
 const PORT = Number(process.env.PORT) || 3001;
-const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL;
+const isProduction = process.env.NODE_ENV === 'production';
+const databaseUrl = isProduction ? process.env.DATABASE_URL || process.env.DB_URL : undefined;
 
 async function dropAllTables(): Promise<void> {
   const client = databaseUrl
@@ -42,3 +43,14 @@ async function main() {
   await seedAdmin();
   await seedRooms();
 }
+
+main()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`API running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });

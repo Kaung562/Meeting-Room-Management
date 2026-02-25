@@ -8,7 +8,8 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
 
-const databaseUrl = process.env.DATABASE_URL || process.env.DB_URL;
+const isProduction = process.env.NODE_ENV === 'production';
+const databaseUrl = isProduction ? process.env.DATABASE_URL : undefined;
 
 export const AppDataSource = new DataSource(
   databaseUrl
