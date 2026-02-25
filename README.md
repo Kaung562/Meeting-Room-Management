@@ -42,7 +42,7 @@ A web app for managing bookings across multiple meeting rooms, with role-based a
 
 | Action | USER | OWNER | ADMIN |
 |--------|------|-------|-------|
-| Create booking | ✓ | ✓ | ✓ |
+| Create booking | ✓ | ✓ | ✗ |
 | View all bookings | ✓ | ✓ | ✓ |
 | Delete own booking | ✓ | ✓ | ✓ |
 | Delete any booking | ✗ | ✓ | ✓ |
@@ -55,7 +55,7 @@ A web app for managing bookings across multiple meeting rooms, with role-based a
 ## Time and overlap rules
 
 - Times are **ISO 8601** (UTC). Stored and compared consistently.
-- **Overlap:** Slots are half-open `[start, end)`. Back-to-back bookings (one’s end = next’s start) are allowed.
+- **Overlap:** Slots use half-open intervals `[start, end)`. Two bookings overlap if and only if `start1 < end2 AND start2 < end1`. Back-to-back bookings where one booking's `endTime` equals the next booking's `startTime` are explicitly **allowed** — they do not count as overlapping.
 - Invalid requests (e.g. start ≥ end, overlapping slot) return clear 400 error messages.
 
 ## API (summary)
