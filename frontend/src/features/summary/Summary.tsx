@@ -22,6 +22,18 @@ export default function Summary({ currentUserId, onError }: SummaryProps) {
 
   if (loading) return <p>Loading summary…</p>;
 
+  function DateCell({ iso }: { iso: string }) {
+    const formatted = formatDateTime(iso);
+    const match = formatted.match(/(.*\d{2}:\d{2})\s*(am|pm|AM|PM)/i);
+    if (!match) return <>{formatted}</>;
+
+    return (
+      <>
+        {match[1]} <span className="meridiem">{match[2].toUpperCase()}</span>
+      </>
+    );
+  }
+
   return (
     <section>
       <h2>Usage Summary</h2>
@@ -59,8 +71,8 @@ export default function Summary({ currentUserId, onError }: SummaryProps) {
                   {bookings.map((b) => (
                     <tr key={b.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
                       <td style={{ padding: 6 }}>{b.roomName}</td>
-                      <td style={{ padding: 6 }}>{formatDateTime(b.startTime)}</td>
-                      <td style={{ padding: 6 }}>{formatDateTime(b.endTime)}</td>
+                      <td style={{ padding: 6 }}><DateCell iso={b.startTime} /></td>
+                      <td style={{ padding: 6 }}><DateCell iso={b.endTime} /></td>
                     </tr>
                   ))}
                 </tbody>
