@@ -389,6 +389,11 @@ a {
   border-color: #93c5fd;
 }
 
+.meridiem {
+  font-weight: 600;
+  color: #515151;
+}
+
 @media (max-width: 900px) {
   .hero-title {
     font-size: 26px;
