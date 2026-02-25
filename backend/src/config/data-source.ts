@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource(
     ? {
         type: 'postgres',
         url: databaseUrl,
-        synchronize: process.env.NODE_ENV !== 'production',
+        synchronize: true,
         dropSchema: false,
         logging: process.env.DB_LOGGING === 'true',
         entities: [User, Booking, Room],
