@@ -24,6 +24,8 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
   const [modalOpen, setModalOpen] = useState(false);
   const [modalVariant, setModalVariant] = useState<'success' | 'error' | 'info'>('info');
   const [modalTitle, setModalTitle] = useState('Info');
+  const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const showModal = (title: string, text: string, variant: 'success' | 'error' | 'info') => {
     setModalTitle(title);
@@ -50,6 +52,7 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
 
   const handleCreate = (e: FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     clearError();
     setMessage('');
     const roomId = Number(selectedRoomId);
@@ -75,6 +78,7 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
       showModal('Validation error', 'Start time must be before end time.', 'error');
       return;
     }
+    setSubmitting(true);
     createBooking(currentUser.id, { roomId, startTime: startTime.toISOString(), endTime: endTime.toISOString() })
       .then(() => {
         setSelectedRoomId('');
@@ -86,10 +90,12 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
         showModal('Booking failed', msg, 'error');
-      });
+      })
+      .finally(() => setSubmitting(false));
   };
 
   const handleDelete = (id: number, bookingUserId: number) => {
+    if (deletingId === id) return;
     const canDelete =
       currentUser.role === 'ADMIN' || currentUser.role === 'OWNER' || bookingUserId === currentUser.id;
     if (!canDelete) {
@@ -97,6 +103,7 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
       return;
     }
     clearError();
+    setDeletingId(id);
     deleteBooking(currentUser.id, id)
       .then(() => {
         showModal('Success', 'Booking deleted.', 'success');
@@ -105,7 +112,8 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
         showModal('Delete failed', msg, 'error');
-      });
+      })
+      .finally(() => setDeletingId(null));
   };
 
   function DateCell({ iso }: { iso: string }) {
@@ -170,8 +178,9 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
             <button
               type="submit"
               className="primary-action-btn"
+              disabled={submitting}
             >
-              Create booking
+              {submitting ? 'Creating…' : 'Create booking'}
             </button>
           </div>
         </form>
@@ -233,8 +242,9 @@ export default function Bookings({ currentUser, onError, clearError }: BookingsP
                             type="button"
                             onClick={() => handleDelete(b.id, b.userId)}
                             className="danger-action-btn"
+                            disabled={deletingId === b.id}
                           >
-                            Delete
+                            {deletingId === b.id ? 'Deleting…' : 'Delete'}
                           </button>
                         )}
                       </td>

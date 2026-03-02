@@ -32,6 +32,8 @@ export default function UserManagement({
   const [modalOpen, setModalOpen] = useState(false);
   const [modalVariant, setModalVariant] = useState<'success' | 'error' | 'info'>('info');
   const [modalTitle, setModalTitle] = useState('Info');
+  const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const showModal = (title: string, text: string, variant: 'success' | 'error' | 'info') => {
     setModalTitle(title);
@@ -48,6 +50,7 @@ export default function UserManagement({
 
   const handleCreate = (e: FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     setMessage('');
     if (!username.trim()) {
       showModal('Validation error', 'Username is required.', 'error');
@@ -61,6 +64,7 @@ export default function UserManagement({
       showModal('Validation error', 'Name is required.', 'error');
       return;
     }
+    setSubmitting(true);
     createUser(currentUserId, {
       username: username.trim(),
       password,
@@ -78,7 +82,8 @@ export default function UserManagement({
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
         showModal('User creation failed', msg, 'error');
-      });
+      })
+      .finally(() => setSubmitting(false));
   };
 
   const handleRoleChange = (id: number, newRole: string) => {
@@ -100,6 +105,7 @@ export default function UserManagement({
       return;
     }
     setMessage('');
+    setDeletingId(id);
     deleteUser(currentUserId, id)
       .then(() => {
         setUsers((prev) => prev.filter((u) => u.id !== id));
@@ -108,7 +114,8 @@ export default function UserManagement({
       .catch((e) => {
         const msg = e instanceof Error ? e.message : String(e);
         showModal('Delete failed', msg, 'error');
-      });
+      })
+      .finally(() => setDeletingId(null));
   };
 
   const handleDelete = async (id: number, username: string, name: string) => {
@@ -186,8 +193,9 @@ export default function UserManagement({
           <button
             type="submit"
             className="primary-action-btn"
+            disabled={submitting}
           >
-            Create user
+            {submitting ? 'Creating…' : 'Create user'}
           </button>
         </div>
       </form>
@@ -236,8 +244,9 @@ export default function UserManagement({
                     type="button"
                     onClick={() => handleDelete(u.id, u.username, u.name)}
                     className="danger-action-btn"
+                    disabled={deletingId === u.id}
                   >
-                    Delete
+                    {deletingId === u.id ? 'Deleting…' : 'Delete'}
                   </button>
                 )}
               </td>
