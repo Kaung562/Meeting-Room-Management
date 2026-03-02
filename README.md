@@ -84,3 +84,6 @@ Protected routes require header: `x-user-id: <userId>`.
 - PostgreSQL database is hosted on **Neon**.
 - Frontend URL: **https://fe-mt-room-booking.onrender.com**
 - Backend URL: **https://be-mt-room-booking.onrender.com**
+- Default seed admin credentials:
+      username - **admin123**
+      password - **admin123**
